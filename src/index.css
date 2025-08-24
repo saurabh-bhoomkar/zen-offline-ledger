@@ -8,35 +8,54 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Zen Ledger Dark Theme - Security-focused finance app */
+    --background: 210 25% 8%;
+    --foreground: 210 40% 98%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 210 25% 10%;
+    --card-foreground: 210 40% 98%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 210 25% 12%;
+    --popover-foreground: 210 40% 98%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 210 100% 60%;
+    --primary-foreground: 210 25% 8%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 210 20% 15%;
+    --secondary-foreground: 210 40% 98%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 210 20% 12%;
+    --muted-foreground: 210 20% 65%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 142 75% 50%;
+    --accent-foreground: 210 25% 8%;
 
-    --destructive: 0 84.2% 60.2%;
+    --success: 142 75% 50%;
+    --success-foreground: 210 25% 8%;
+
+    --warning: 38 100% 60%;
+    --warning-foreground: 210 25% 8%;
+
+    --destructive: 0 75% 60%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 210 20% 20%;
+    --input: 210 20% 15%;
+    --ring: 210 100% 60%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
+
+    /* Custom gradients for premium feel */
+    --gradient-primary: linear-gradient(135deg, hsl(210 100% 60%), hsl(210 100% 50%));
+    --gradient-card: linear-gradient(145deg, hsl(210 25% 10%), hsl(210 25% 12%));
+    --gradient-success: linear-gradient(135deg, hsl(142 75% 50%), hsl(142 75% 45%));
+    
+    /* Shadows for depth */
+    --shadow-card: 0 8px 32px -8px hsl(210 25% 5% / 0.6);
+    --shadow-button: 0 4px 16px -4px hsl(210 100% 60% / 0.3);
+    
+    /* Transitions */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
     --sidebar-background: 0 0% 98%;
 
