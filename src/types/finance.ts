@@ -39,6 +39,18 @@ export type Currency =
   | 'CNY'
   | 'INR';
 
+export interface AuditEntry {
+  id: string;
+  accountId: string;
+  accountName: string;
+  previousBalance: number;
+  newBalance: number;
+  changeAmount: number;
+  action: 'created' | 'updated' | 'deleted';
+  timestamp: Date;
+  description: string;
+}
+
 export interface UserSettings {
   defaultCurrency: Currency;
   pinHash?: string;

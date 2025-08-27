@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useAccounts } from '@/hooks/useLocalStorage';
+import { AuditTrail } from './audit-trail';
 import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 import { toast } from '@/hooks/use-toast';
 import { 
@@ -25,7 +26,7 @@ interface DashboardProps {
 }
 
 export function Dashboard({ onLogout }: DashboardProps) {
-  const { accounts, addAccount, updateAccount, deleteAccount, clearAllAccounts } = useAccounts();
+  const { accounts, auditTrail, addAccount, updateAccount, deleteAccount, clearAllAccounts, clearAuditTrail } = useAccounts();
   const [balanceVisible, setBalanceVisible] = useState(true);
   const [editingAccount, setEditingAccount] = useState<Account | null>(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -251,6 +252,22 @@ export function Dashboard({ onLogout }: DashboardProps) {
             </Card>
           </div>
         )}
+
+        {/* Audit Trail Section */}
+        <div className="mt-8">
+          <AuditTrail 
+            auditTrail={auditTrail} 
+            onClearTrail={() => {
+              if (confirm('Are you sure you want to clear the audit trail? This action cannot be undone.')) {
+                clearAuditTrail();
+                toast({
+                  title: "Audit trail cleared",
+                  description: "All audit entries have been deleted",
+                });
+              }
+            }}
+          />
+        </div>
         
         <EditAccountDialog
           account={editingAccount}
