@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useAccounts } from '@/hooks/useLocalStorage';
+import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
+import { toast } from '@/hooks/use-toast';
 import { 
   Settings, 
   Download, 
@@ -40,6 +42,45 @@ export function Dashboard({ onLogout }: DashboardProps) {
     }).format(amount);
   };
 
+  const exportToCSV = async () => {
+    try {
+      // Create CSV content
+      const headers = ['Account Name', 'Type', 'Balance', 'Currency', 'Created Date'];
+      const csvContent = [
+        headers.join(','),
+        ...accounts.map((account: Account) => [
+          `"${account.name}"`,
+          account.type,
+          account.balance,
+          account.currency,
+          new Date(account.createdAt).toLocaleDateString()
+        ].join(','))
+      ].join('\n');
+
+      const fileName = `zen-ledger-backup-${new Date().toISOString().split('T')[0]}.csv`;
+
+      // Write file to Downloads directory
+      await Filesystem.writeFile({
+        path: fileName,
+        data: csvContent,
+        directory: Directory.Documents, // Use Documents as Downloads may not be accessible
+        encoding: Encoding.UTF8,
+      });
+
+      toast({
+        title: "Backup exported successfully",
+        description: `File saved as ${fileName} in Documents folder`,
+      });
+    } catch (error) {
+      console.error('Export failed:', error);
+      toast({
+        title: "Export failed",
+        description: "Unable to export backup file",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -55,7 +96,7 @@ export function Dashboard({ onLogout }: DashboardProps) {
             </Badge>
           </div>
           <div className="flex items-center space-x-2">
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" onClick={exportToCSV}>
               <Download className="h-4 w-4 mr-2" />
               Backup
             </Button>

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button } from './button';
 import { Input } from './input';
-import { Shield, Lock, Fingerprint } from 'lucide-react';
+import { Shield, Lock } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './card';
 
 interface SecurityScreenProps {
@@ -34,12 +34,6 @@ export function SecurityScreen({ onAuthenticated, isFirstLaunch = false }: Secur
     }
   };
 
-  const handleBiometric = () => {
-    // Simulate biometric authentication
-    setTimeout(() => {
-      onAuthenticated();
-    }, 1000);
-  };
 
   if (isSetup) {
     return (
@@ -101,23 +95,6 @@ export function SecurityScreen({ onAuthenticated, isFirstLaunch = false }: Secur
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Button
-            onClick={handleBiometric}
-            variant="outline"
-            className="w-full h-12 border-primary/20 hover:bg-primary/5"
-          >
-            <Fingerprint className="mr-2 h-5 w-5" />
-            Use Biometric Authentication
-          </Button>
-          
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t border-border" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-card px-2 text-muted-foreground">Or</span>
-            </div>
-          </div>
 
           <div>
             <label className="text-sm font-medium text-muted-foreground">Enter PIN</label>
