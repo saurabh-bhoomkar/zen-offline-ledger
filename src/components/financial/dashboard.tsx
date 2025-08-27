@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Account, Currency } from '@/types/finance';
 import { AccountCard } from './account-card';
 import { AddAccountDialog } from './add-account-dialog';
+import { EditAccountDialog } from './edit-account-dialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -15,7 +16,8 @@ import {
   EyeOff, 
   TrendingUp, 
   TrendingDown,
-  Wallet
+  Wallet,
+  Trash2
 } from 'lucide-react';
 
 interface DashboardProps {
@@ -23,8 +25,10 @@ interface DashboardProps {
 }
 
 export function Dashboard({ onLogout }: DashboardProps) {
-  const { accounts, addAccount } = useAccounts();
+  const { accounts, addAccount, updateAccount, deleteAccount, clearAllAccounts } = useAccounts();
   const [balanceVisible, setBalanceVisible] = useState(true);
+  const [editingAccount, setEditingAccount] = useState<Account | null>(null);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
   const defaultCurrency: Currency = 'USD';
 
   const totalBalance = accounts.reduce((sum: number, account: Account) => {
@@ -81,6 +85,21 @@ export function Dashboard({ onLogout }: DashboardProps) {
     }
   };
 
+  const handleEditAccount = (account: Account) => {
+    setEditingAccount(account);
+    setEditDialogOpen(true);
+  };
+
+  const handleClearAll = () => {
+    if (confirm('Are you sure you want to delete all accounts? This action cannot be undone.')) {
+      clearAllAccounts();
+      toast({
+        title: "All accounts cleared",
+        description: "All accounts have been successfully deleted",
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -100,6 +119,12 @@ export function Dashboard({ onLogout }: DashboardProps) {
               <Download className="h-4 w-4 mr-2" />
               Backup
             </Button>
+            {accounts.length > 0 && (
+              <Button variant="outline" size="sm" onClick={handleClearAll}>
+                <Trash2 className="h-4 w-4 mr-2" />
+                Clear All
+              </Button>
+            )}
             <Button variant="outline" size="sm">
               <Settings className="h-4 w-4" />
             </Button>
@@ -183,6 +208,7 @@ export function Dashboard({ onLogout }: DashboardProps) {
                   // Navigate to account details
                   console.log('Navigate to account:', account.id);
                 }}
+                onEdit={() => handleEditAccount(account)}
               />
             ))}
           </div>
@@ -225,6 +251,14 @@ export function Dashboard({ onLogout }: DashboardProps) {
             </Card>
           </div>
         )}
+        
+        <EditAccountDialog
+          account={editingAccount}
+          open={editDialogOpen}
+          onOpenChange={setEditDialogOpen}
+          onUpdateAccount={updateAccount}
+          onDeleteAccount={deleteAccount}
+        />
       </main>
     </div>
   );

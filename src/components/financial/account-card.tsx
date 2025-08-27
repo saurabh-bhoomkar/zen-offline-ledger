@@ -1,11 +1,13 @@
 import { Account } from '@/types/finance';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { CreditCard, Wallet, PiggyBank, TrendingUp, DollarSign, Briefcase } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { CreditCard, Wallet, PiggyBank, TrendingUp, DollarSign, Briefcase, Edit } from 'lucide-react';
 
 interface AccountCardProps {
   account: Account;
   onClick?: () => void;
+  onEdit?: () => void;
 }
 
 const accountIcons = {
@@ -28,7 +30,7 @@ const accountTypeLabels = {
   other: 'Other',
 };
 
-export function AccountCard({ account, onClick }: AccountCardProps) {
+export function AccountCard({ account, onClick, onEdit }: AccountCardProps) {
   const Icon = accountIcons[account.type];
   const isNegative = account.balance < 0;
   
@@ -57,6 +59,19 @@ export function AccountCard({ account, onClick }: AccountCardProps) {
               </Badge>
             </div>
           </div>
+          {onEdit && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={(e) => {
+                e.stopPropagation();
+                onEdit();
+              }}
+              className="opacity-0 group-hover:opacity-100 transition-opacity"
+            >
+              <Edit className="h-4 w-4" />
+            </Button>
+          )}
         </div>
         
         <div className="text-right">

@@ -52,5 +52,9 @@ export function useAccounts() {
     setAccounts((prev: any[]) => prev.filter(account => account.id !== id));
   };
 
-  return { accounts, addAccount, updateAccount, deleteAccount };
+  const clearAllAccounts = () => {
+    setAccounts([]);
+  };
+
+  return { accounts, addAccount, updateAccount, deleteAccount, clearAllAccounts };
 }
