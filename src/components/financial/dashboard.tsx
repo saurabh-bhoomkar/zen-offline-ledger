@@ -6,7 +6,8 @@ import { EditAccountDialog } from './edit-account-dialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { useAccounts } from '@/hooks/useLocalStorage';
+import { useAccounts } from '@/hooks/useAccounts';
+import { useAuth } from '@/hooks/useAuth';
 import { AuditTrail } from './audit-trail';
 import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 import { toast } from '@/hooks/use-toast';
@@ -21,12 +22,9 @@ import {
   Trash2
 } from 'lucide-react';
 
-interface DashboardProps {
-  onLogout: () => void;
-}
-
-export function Dashboard({ onLogout }: DashboardProps) {
-  const { accounts, auditTrail, addAccount, updateAccount, deleteAccount, clearAllAccounts, clearAuditTrail } = useAccounts();
+export function Dashboard() {
+  const { logout } = useAuth();
+  const { accounts, auditTrail, addAccount, updateAccount, deleteAccount, clearAllAccounts, clearAuditTrail, error } = useAccounts();
   const [balanceVisible, setBalanceVisible] = useState(true);
   const [editingAccount, setEditingAccount] = useState<Account | null>(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -129,11 +127,22 @@ export function Dashboard({ onLogout }: DashboardProps) {
             <Button variant="outline" size="sm">
               <Settings className="h-4 w-4" />
             </Button>
+            <Button variant="outline" size="sm" onClick={logout}>
+              Logout
+            </Button>
           </div>
         </div>
       </header>
 
       <main className="max-w-6xl mx-auto px-4 py-8">
+        {error && (
+          <div className="mb-4 p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
+            <p className="text-sm text-destructive">
+              Data Error: {error}
+            </p>
+          </div>
+        )}
+
         {/* Balance Overview */}
         <Card className="bg-gradient-card shadow-card border-border mb-8">
           <CardHeader>

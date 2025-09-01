@@ -4,37 +4,39 @@ import { Input } from './input';
 import { Shield, Lock } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './card';
 import { useToast } from './use-toast';
-import { useAccounts } from '@/hooks/useLocalStorage';
+import { useAuth } from '@/hooks/useAuth';
 
 interface SecurityScreenProps {
-  onAuthenticated: () => void;
   isFirstLaunch?: boolean;
 }
 
-export function SecurityScreen({ onAuthenticated, isFirstLaunch = false }: SecurityScreenProps) {
+export function SecurityScreen({ isFirstLaunch = false }: SecurityScreenProps) {
   const [pin, setPin] = useState('');
   const [isSetup, setIsSetup] = useState(isFirstLaunch);
   const [setupPin, setSetupPin] = useState('');
   const [confirmPin, setConfirmPin] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
-  const { loadEncryptedData } = useAccounts();
+  const { login, setupPin: authSetupPin } = useAuth();
 
-  const handleSetupComplete = () => {
+  const handleSetupComplete = async () => {
     if (setupPin === confirmPin && setupPin.length >= 4) {
-      // Store PIN in settings
-      const settings = {
-        pinHash: setupPin,
-        isFirstLaunch: false,
-        defaultCurrency: 'USD',
-        biometricEnabled: false
-      };
-      localStorage.setItem('zenLedger_settings', JSON.stringify(settings));
-      toast({
-        title: "Setup Complete",
-        description: "Your secure PIN has been set up successfully",
-      });
-      onAuthenticated();
+      try {
+        setIsLoading(true);
+        await authSetupPin(setupPin);
+        toast({
+          title: "Setup Complete",
+          description: "Your secure PIN has been set up successfully",
+        });
+      } catch (error) {
+        toast({
+          title: "Setup Failed",
+          description: "Failed to set up PIN. Please try again.",
+          variant: "destructive",
+        });
+      } finally {
+        setIsLoading(false);
+      }
     } else {
       toast({
         title: "Error",
@@ -50,17 +52,12 @@ export function SecurityScreen({ onAuthenticated, isFirstLaunch = false }: Secur
     setIsLoading(true);
     
     try {
-      const settings = JSON.parse(localStorage.getItem('zenLedger_settings') || '{}');
-      
-      if (settings.pinHash === pin) {
-        // Load encrypted data after successful authentication
-        await loadEncryptedData(pin);
-        
+      const success = await login(pin);
+      if (success) {
         toast({
           title: "Success",
           description: "Successfully authenticated",
         });
-        onAuthenticated();
       } else {
         toast({
           title: "Error",
@@ -117,10 +114,10 @@ export function SecurityScreen({ onAuthenticated, isFirstLaunch = false }: Secur
             </div>
             <Button
               onClick={handleSetupComplete}
-              disabled={setupPin !== confirmPin || setupPin.length < 4}
+              disabled={setupPin !== confirmPin || setupPin.length < 4 || isLoading}
               className="w-full bg-gradient-primary shadow-button"
             >
-              Complete Setup
+              {isLoading ? 'Setting up...' : 'Complete Setup'}
             </Button>
           </CardContent>
         </Card>
