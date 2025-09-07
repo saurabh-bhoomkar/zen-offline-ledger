@@ -44,7 +44,7 @@ export function useAuth() {
         defaultCurrency: 'USD',
         biometricEnabled: false,
         isFirstLaunch: true
-      });
+      }, { encrypt: false });
 
       if (settings.pinHash === pin) {
         setCurrentPin(pin);
@@ -81,7 +81,7 @@ export function useAuth() {
       biometricEnabled: false
     };
     
-    await secureStorage.setItem('zenLedger_settings', settings);
+    await secureStorage.setItem('zenLedger_settings', settings, { encrypt: false });
     setCurrentPin(pin);
     secureStorage.setPin(pin);
     setIsAuthenticated(true);
