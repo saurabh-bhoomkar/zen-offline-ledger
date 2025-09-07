@@ -30,12 +30,8 @@ const Index = () => {
 
   // Load encrypted data after authentication
   useEffect(() => {
-    console.log('Auth effect:', { isAuthenticated, dataLoaded });
     if (isAuthenticated && !dataLoaded) {
-      console.log('Loading encrypted data...');
-      loadEncryptedData().catch((error) => {
-        console.error('Failed to load encrypted data:', error);
-      });
+      loadEncryptedData().catch(console.error);
     }
   }, [isAuthenticated, dataLoaded, loadEncryptedData]);
 
@@ -60,7 +56,7 @@ const Index = () => {
   }
 
   // Show loading while data is being decrypted
-  if (!dataLoaded) {
+  if (isAuthenticated && !dataLoaded) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="space-y-4 text-center">
@@ -72,7 +68,11 @@ const Index = () => {
     );
   }
 
-  return <Dashboard />;
+  if (isAuthenticated && dataLoaded) {
+    return <Dashboard />;
+  }
+
+  return null;
 };
 
 export default Index;
