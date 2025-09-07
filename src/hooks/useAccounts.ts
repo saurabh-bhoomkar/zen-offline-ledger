@@ -25,14 +25,21 @@ export function useAccounts() {
   // Load all encrypted data
   const loadEncryptedData = useCallback(async (pin?: string) => {
     const pinToUse = pin || currentPin;
+    console.log('loadEncryptedData called with pin:', !!pinToUse);
     if (!pinToUse) {
       throw new Error('No PIN available for data decryption');
     }
 
-    await Promise.all([
-      loadAccountsData(pinToUse),
-      loadAuditData(pinToUse)
-    ]);
+    try {
+      await Promise.all([
+        loadAccountsData(pinToUse),
+        loadAuditData(pinToUse)
+      ]);
+      console.log('Data loaded successfully');
+    } catch (error) {
+      console.error('Error loading data:', error);
+      throw error;
+    }
   }, [currentPin, loadAccountsData, loadAuditData]);
 
   const addAuditEntry = useCallback(async (entry: Omit<AuditEntry, 'id' | 'timestamp'>) => {

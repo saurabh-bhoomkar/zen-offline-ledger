@@ -13,16 +13,18 @@ export function useSecureStorage<T>(
   // Load data from storage
   const loadData = useCallback(async (pin?: string) => {
     try {
+      console.log(`Loading data for key: ${key}, encrypt: ${encrypt}`);
       setError(null);
       const storedValue = await secureStorage.getItem(key, initialValue, { 
         encrypt, 
         pin 
       });
+      console.log(`Data loaded for ${key}:`, !!storedValue);
       setValue(storedValue);
       setIsLoaded(true);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load data');
       console.error(`Error loading ${key}:`, err);
+      setError(err instanceof Error ? err.message : 'Failed to load data');
     }
   }, [key, initialValue, encrypt]);
 

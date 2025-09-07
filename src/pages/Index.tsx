@@ -23,8 +23,12 @@ const Index = () => {
 
   // Load encrypted data after authentication
   useEffect(() => {
+    console.log('Auth effect:', { isAuthenticated, dataLoaded });
     if (isAuthenticated && !dataLoaded) {
-      loadEncryptedData().catch(console.error);
+      console.log('Loading encrypted data...');
+      loadEncryptedData().catch((error) => {
+        console.error('Failed to load encrypted data:', error);
+      });
     }
   }, [isAuthenticated, dataLoaded, loadEncryptedData]);
 
