@@ -19,7 +19,14 @@ const Index = () => {
     }
   };
   
-  const [isFirstLaunch] = useState(getIsFirstLaunch());
+  const [isFirstLaunch, setIsFirstLaunch] = useState(getIsFirstLaunch());
+
+  // Update first launch status when authentication changes
+  useEffect(() => {
+    if (isAuthenticated) {
+      setIsFirstLaunch(false);
+    }
+  }, [isAuthenticated]);
 
   // Load encrypted data after authentication
   useEffect(() => {
